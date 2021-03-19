@@ -10,11 +10,12 @@ lazy val root = project
     scalaVersion := "3.0.0-RC1",
     scalacOptions ++= Seq(
       "-Ycheck-init",
-      "-Yindent-colons"
+      "-Yindent-colons",
+      "-language:noAutoTupling"
     ),
-    
+
     libraryDependencies ++= Seq(
-      "org.getshaka" %%% "native-converter" % "0.3.0"
+      "org.getshaka" %%% "native-converter" % "0.4.0"
     ),
 
     // publishing settings

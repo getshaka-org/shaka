@@ -11,7 +11,7 @@ import scala.collection.mutable.ArrayBuffer
  */
 class PropBinding[V](
   state: State[V],
-  builder: state.PropBindingBuilder
+  builder: PropBindingBuilder[V]
 ) extends Binding[V]:
   
   private val children = ArrayBuffer.empty[Binding[?]]

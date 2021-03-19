@@ -13,7 +13,7 @@ import scala.scalajs.js
 class NodeBinding[V](
   state: State[V],
   parentElement: Element,
-  builder: state.NodeBindingBuilder
+  builder: NodeBindingBuilder[V]
 ) extends Binding[V]:
   import NodeBinding.*
 
@@ -66,7 +66,7 @@ class NodeBinding[V](
     state.removeBinding(this)
     for b <- children do b.destroy()
 
-private object NodeBinding:
+object NodeBinding:
   def newFragment: Element = js.Dynamic.global.document.createDocumentFragment().asInstanceOf[Element]
 
   def newComment(): Node =
