@@ -2,11 +2,11 @@
 
 A modern Scala.js library for building user interfaces. Shaka has
 
-* Precise databinding, without VDOM, macros, or AOT compilation.
+* Precise databinding, without VDOM, confusing macros, or AOT compilation.
 * A developer experience familiar to React.JS developers, with minimal abstraction.
 * Built-in state management and persistence.
 
-Checkout the [docs](https://getshaka.org), [ScalaDoc](/), generate a starter project:
+Checkout the [docs](https://getshaka.org), [ScalaDoc](/todo), generate a starter project:
 
 ```
 sbt new getshaka-org/shaka.g8
