@@ -9,14 +9,14 @@ A modern Scala.js library for building user interfaces. Shaka has
 Checkout the [docs](https://getshaka.org), [ScalaDoc](/), generate a starter project:
 
 ```
-sbt new augustnagro/shaka.g8
+sbt new getshaka-org/shaka.g8
 
 // or, for a JVM/JS Cross-Project
-sbt new augustnagro/shaka-crossproject.g8
+sbt new getshaka-org/shaka-crossproject.g8
 ```
 
-Or, grab the maven coordinates directly:
+Or, grab the coordinates directly:
 
 ```
-libraryDependencies ++= "org.getshaka" %%% "shaka" % "0.1.0"
+libraryDependencies ++= "org.getshaka" %%% "shaka" % "0.2.0"
 ```
