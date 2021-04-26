@@ -18,5 +18,10 @@ sbt new getshaka-org/shaka-crossproject.g8
 Or, grab the coordinates directly:
 
 ```
-libraryDependencies ++= "org.getshaka" %%% "shaka" % "0.2.0"
+libraryDependencies ++= "org.getshaka" %%% "shaka" % "0.2.1"
 ```
+
+## Notes
+* The website is down. Github pages doesn't support SPAs very well, so I'm in the process of setting up hosting.
+
+* Scaladoc link doesn't work because Scala 3 RC3's ScalaDoc is broken. The link will be updated when [this issue](https://github.com/lampepfl/dotty/issues/11943) gets fixed.
