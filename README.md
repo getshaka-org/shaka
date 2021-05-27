@@ -15,7 +15,7 @@ sbt new getshaka-org/shaka.g8
 Or, grab the coordinates directly:
 
 ```
-libraryDependencies ++= "org.getshaka" %%% "shaka" % "0.2.1"
+libraryDependencies ++= "org.getshaka" %%% "shaka" % "0.3.0"
 ```
 
 ## Notes
