@@ -1,6 +1,7 @@
 package org.getshaka.shaka
 
 import scala.collection.mutable.ArrayBuffer
+import scala.scalajs.js
 
 /**
  * Light-weight Binding subclass for binding CSS
@@ -14,7 +15,7 @@ class PropBinding[V](
   builder: PropBindingBuilder[V]
 ) extends Binding[V]:
   
-  private val children = ArrayBuffer.empty[Binding[?]]
+  private val children = js.Array[Binding[?]]()
 
   override def addChildBinding(b: Binding[?]): Unit =
     children += b

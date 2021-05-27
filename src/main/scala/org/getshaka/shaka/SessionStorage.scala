@@ -14,16 +14,15 @@ import org.getshaka.nativeconverter.NativeConverter
  * @see https://developer.mozilla.org/en-US/docs/Tools/Storage_Inspector/Local_Storage_Session_Storage
  */
 class SessionStorage[V: NativeConverter](key: String) extends StorageManager[V]:
-  if !SessionStorage.Keys.add(key) then
-    throw IllegalArgumentException(s"key $key already used, choose another")
+  require(!SessionStorage.Keys.contains(key), s"key $key already used, choose another")
+  SessionStorage.Keys.add(key)
   
   override def fetch: Option[V] =
-    val cachedString = js.Dynamic.global.sessionStorage.getItem(key).asInstanceOf[String|Null]
-    if cachedString == null then None
-    else Some(NativeConverter[V].fromNative(js.JSON.parse(cachedString)))
+    val cachedString = js.Dynamic.global.sessionStorage.getItem(key).asInstanceOf[String]
+    Option(cachedString).map(NativeConverter[V].fromJson)
 
   override def store(value: V): Unit =
-    js.Dynamic.global.sessionStorage.setItem(key, js.JSON.stringify(value.toNative))
+    js.Dynamic.global.sessionStorage.setItem(key, value.toJson)
 
 object SessionStorage:
-  private val Keys = HashSet.empty[String]
+  private val Keys = js.Set.empty[String]

@@ -1,8 +1,5 @@
 package org.getshaka.shaka
 
-import scala.scalajs.js
-import scala.collection.mutable.ArrayBuffer
-
 /**
  * Binding at the root of the heirarchy. Operations do nothing.
  */

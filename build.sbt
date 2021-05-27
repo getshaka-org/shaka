@@ -4,15 +4,15 @@ lazy val root = project
   .settings(
     organization := "org.getshaka",
     name := "shaka",
-    version := "0.2.2-SNAPSHOT",
+    version := "0.3.0-SNAPSHOT",
     versionScheme := Some("early-semver"),
 
-    scalaVersion := "3.0.0-RC3",
+    scalaVersion := "3.0.0",
     // todo remove when fixed: https://github.com/lampepfl/dotty/issues/11943
     Compile / doc / sources := Seq(),
 
     libraryDependencies ++= Seq(
-      "org.getshaka" %%% "native-converter" % "0.4.1"
+      "org.getshaka" %%% "native-converter" % "0.5.0"
     ),
 
     // publishing settings

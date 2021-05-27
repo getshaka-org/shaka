@@ -41,6 +41,7 @@ type PropBindingBuilder[V] = Binding[?] ?=> (V => Unit)
  */
 abstract class State[V](initialValue: => V, storageManager: StorageManager[V] = NoStorage[V]()):
   private var _value = storageManager.fetch.getOrElse(initialValue)
+
   // using the javascript Set since it has nice properties..
   // ordered & safe to delete while iterating
   private val bindings = js.Set.empty[Binding[V]]
@@ -53,10 +54,13 @@ abstract class State[V](initialValue: => V, storageManager: StorageManager[V] = 
   /**
    * Sets this State's new value. All depdendent Bindings are recomputed.
    */
-  protected def value_=(newValue: V): Unit =
+  protected def setValue(newValue: V): Unit =
     _value = newValue
     storageManager.store(newValue)
     for b <- bindings do b.onChange(newValue)
+
+  protected def setValue(oldToNew: V => V): Unit =
+    setValue(oldToNew(_value))
 
   /**
    * Construct a Binding for DOM Nodes

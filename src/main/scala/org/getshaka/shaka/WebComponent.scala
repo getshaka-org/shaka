@@ -2,6 +2,7 @@ package org.getshaka.shaka
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSGlobal
+import ShadowDom.*
 
 /**
  * A {@link Component} wrapped in a Custom Element. Custom Elements
@@ -30,38 +31,37 @@ trait WebComponent extends Component:
   def disconnectedCallback(): Unit = ()
 
   /**
-   * Any scoped styles are applied to this and this WebComponent only.
-   * When scopedStyle is not null, an open Shadow DOM is appended to this
-   * WebComponent. That means ids, class names, and selectors can be
+   * Whether this WebComponent should use ShadowDom
+   * and/or scoped styles. Defaults to Disabled.
+   * <br>
+   * Shadow Dom means that means ids, class names, and selectors can be
    * used without fear of conflicts.
-   * 
    * @see https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM
    */
-  def scopedStyle: String|Null = null
-  
+  def shadowDom: ShadowDom = ShadowDom.Disabled
+
   override def render(using parentElement: Element, parentBinding: Binding[?]): Unit =
     val shakaWc: ShakaWc =
       js.Dynamic.global.document.createElement(ShakaWc.TagName).asInstanceOf[ShakaWc]
     shakaWc.component = this
 
     val wcElement = shakaWc.asInstanceOf[Element]
-    
-    val style: String|Null = scopedStyle
-    // either the custom element itself, or shadowRoot if using scopedStyle.
-    val pe: Element =
-      if style != null then
+
+    val elementToRender: Element = shadowDom match
+      case Disabled => wcElement
+      case Enabled =>
         val shadowRoot = shakaWc.attachShadow(ShakaWc.OpenShadowOptions)
-        if !style.isEmpty then
-          val styleTag = js.Dynamic.global.document.createElement("style")
-          styleTag.textContent = style
-          shadowRoot.appendChild(styleTag)
         shadowRoot.asInstanceOf[Element]
-      else
-        wcElement
-      
+      case WithStyle(scopedStyle) =>
+        val shadowRoot = shakaWc.attachShadow(ShakaWc.OpenShadowOptions)
+        val styleTag = js.Dynamic.global.document.createElement("style")
+        styleTag.textContent = scopedStyle
+        shadowRoot.appendChild(styleTag)
+        shadowRoot.asInstanceOf[Element]
+
     parentElement.appendChild(wcElement)
     
-    super.render(using pe, parentBinding)
+    super.render(using elementToRender, parentBinding)
   
 private class ShakaWc extends HTMLElement:
   var component: WebComponent = null

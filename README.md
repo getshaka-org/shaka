@@ -10,9 +10,6 @@ Checkout the [docs](https://getshaka.org), [ScalaDoc](/todo), generate a starter
 
 ```
 sbt new getshaka-org/shaka.g8
-
-// or, for a JVM/JS Cross-Project
-sbt new getshaka-org/shaka-crossproject.g8
 ```
 
 Or, grab the coordinates directly:

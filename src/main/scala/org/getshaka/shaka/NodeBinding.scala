@@ -17,8 +17,8 @@ class NodeBinding[V](
 ) extends Binding[V]:
   import NodeBinding.*
 
-  private val children = ArrayBuffer.empty[Binding[?]]
-  private var firstRenderedNode: Node|Null = null
+  private val children = js.Array[Binding[?]]()
+  private var firstRenderedNode: Node = null
   private var renderedNodes: Int = 0
 
   override def addChildBinding(b: Binding[?]): Unit =
@@ -29,7 +29,7 @@ class NodeBinding[V](
     for b <- children do b.destroy()
     children.clear()
 
-    val frag = newFragment
+    val frag = newFragment()
     builder(using frag, this)(newValue)
     
     if firstRenderedNode == null then
@@ -46,9 +46,9 @@ class NodeBinding[V](
     else
       // replace the firstRenderedElement with a marker element, and remove all siblings
       for i <- 1 until renderedNodes do
-        parentElement.removeChild(firstRenderedNode.nn.nextSibling)
+        parentElement.removeChild(firstRenderedNode.nextSibling)
       val marker = newComment()
-      parentElement.replaceChild(marker, firstRenderedNode.nn)
+      parentElement.replaceChild(marker, firstRenderedNode)
         
       val len = frag.childNodes.length
       if len > 0 then
@@ -67,7 +67,8 @@ class NodeBinding[V](
     for b <- children do b.destroy()
 
 object NodeBinding:
-  def newFragment: Element = js.Dynamic.global.document.createDocumentFragment().asInstanceOf[Element]
+  private def newFragment(): Element =
+    js.Dynamic.global.document.createDocumentFragment().asInstanceOf[Element]
 
-  def newComment(): Node =
+  private def newComment(): Node =
     js.Dynamic.global.document.createComment("").asInstanceOf[Node]

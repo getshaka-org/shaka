@@ -15,16 +15,15 @@ import scala.collection.mutable.HashSet
  * @see https://developer.mozilla.org/en-US/docs/Tools/Storage_Inspector/Local_Storage_Session_Storage
  */
 class LocalStorage[V: NativeConverter](key: String) extends StorageManager[V]:
-  if !LocalStorage.Keys.add(key) then
-    throw IllegalArgumentException(s"key $key already used, choose another")
+  require(!LocalStorage.Keys.contains(key), s"key $key already used, choose another")
+  LocalStorage.Keys.add(key)
 
   override def fetch: Option[V] =
-    val cachedString = js.Dynamic.global.localStorage.getItem(key).asInstanceOf[String|Null]
-    if cachedString == null then None
-    else Some(NativeConverter[V].fromNative(js.JSON.parse(cachedString)))
+    val cachedString = js.Dynamic.global.localStorage.getItem(key).asInstanceOf[String]
+    Option(cachedString).map(NativeConverter[V].fromJson)
 
   override def store(value: V): Unit =
-    js.Dynamic.global.localStorage.setItem(key, js.JSON.stringify(value.toNative))
+    js.Dynamic.global.localStorage.setItem(key, value.toJson)
 
 object LocalStorage:
-  private val Keys = HashSet.empty[String]
+  private val Keys = js.Set.empty[String]

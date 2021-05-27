@@ -8,7 +8,8 @@ package org.getshaka.shaka
  */
 class OpenState[V](initialValue: V) extends State(initialValue):
   override def value: V = super.value
-  override def value_=(newValue: V): Unit = super.value_=(newValue)
+  override def setValue(newValue: V): Unit = super.setValue(newValue)
+  override def setValue(oldToNew: V => V): Unit = super.setValue(oldToNew)
 
 /**
  * Open state that must be encapsulated. Similar in spirit to
