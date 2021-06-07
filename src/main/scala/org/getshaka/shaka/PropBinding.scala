@@ -24,7 +24,7 @@ class PropBinding[V](
     for b <- children do b.destroy()
     children.clear()
     
-    builder(using this)(newValue)
+    builder(newValue).asInstanceOf[PropsBuilder](using this)
 
   override def destroy(): Unit =
     state.removeBinding(this)

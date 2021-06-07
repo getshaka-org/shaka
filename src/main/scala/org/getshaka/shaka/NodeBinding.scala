@@ -30,7 +30,7 @@ class NodeBinding[V](
     children.clear()
 
     val frag = newFragment()
-    builder(using frag, this)(newValue)
+    builder(newValue).asInstanceOf[ComponentBuilder](using frag, this)
     
     if firstRenderedNode == null then
       val len = frag.childNodes.length

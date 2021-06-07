@@ -3,8 +3,23 @@ package org.getshaka.shaka.builders
 import scala.collection.Seq
 import scala.scalajs.js
 
-import org.getshaka.shaka.{Element, Node, Binding, ComponentBuilder}
+import org.getshaka.shaka.{Element, Node, Binding, ComponentBuilder, Frag, Props, PropsBuilder}
 import org.getshaka.nativeconverter.NativeConverter
+
+/*
+Frag & Props construction and rendering
+ */
+inline def frag(fn: ComponentBuilder): Frag = Frag(fn)
+
+extension (f: Frag)
+  inline def render(using parentElement: Element, parentBinding: Binding[?]): Unit =
+    f.asInstanceOf[ComponentBuilder](using parentElement, parentBinding)
+
+inline def props(pb: PropsBuilder): Props = Props(pb)
+
+extension (p: Props)
+  inline def render(using parentBinding: Binding[?]): Unit =
+    p.asInstanceOf[PropsBuilder](using parentBinding)
 
 /*
 Builders to construct html Nodes & Elements
@@ -351,13 +366,6 @@ inline def onselect[V: NativeConverter](value: V)(using Element): Unit = prop("o
 inline def onsubmit[V: NativeConverter](value: V)(using Element): Unit = prop("onsubmit")(value)
 inline def onwheel[V: NativeConverter](value: V)(using Element): Unit = prop("onwheel")(value)
 
-/**
- * Could be a ComponentBuilder, or could be anything else
- * that's eta-expanded to a ComponentBuilder. Used for the `t`
- * interpolator
- */
-type CbOrAny = (Element, Binding[?]) ?=> Any
-
 import scala.quoted.*
 
 extension (inline sc: StringContext)(using inline pe: Element, inline pb: Binding[?])
@@ -366,16 +374,16 @@ extension (inline sc: StringContext)(using inline pe: Element, inline pb: Bindin
    * <br>
    * An easy way to interpolate text and elements
    */
-  inline def t(inline args: CbOrAny*): Unit = ${ tImpl('pe, 'pb, 'sc, 'args) }
+  inline def t(inline args: ComponentBuilder*): Unit = ${ tImpl('pe, 'pb, 'sc, 'args) }
 
 private def tImpl(
   pe: Expr[Element],
   pb: Expr[Binding[?]],
   sc: Expr[StringContext],
-  args: Expr[Seq[CbOrAny]]
+  args: Expr[Seq[ComponentBuilder]]
 )(using Quotes): Expr[Unit] =
   val argsExprs = args match
-  case Varargs(ae) => ae.asInstanceOf[Seq[Expr[CbOrAny]]]
+  case Varargs(ae) => ae.asInstanceOf[Seq[Expr[ComponentBuilder]]]
   
   sc match
   case '{ StringContext(${Varargs(strings)}: _*) } =>
@@ -387,7 +395,7 @@ private def tArgImpl(
   pe: Expr[Element],
   pb: Expr[Binding[?]],
   strings: Seq[Expr[String]],
-  args: Seq[Expr[CbOrAny]]
+  args: Seq[Expr[ComponentBuilder]]
 )(using Quotes): Expr[Unit] =
   (strings, args) match
   case (Seq(), Seq()) => '{ () }

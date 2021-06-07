@@ -8,8 +8,8 @@ def render(
 ): Unit =
   comp.render(using element, RootBinding())
 
-def renderBuilder(
-  componentBuilder: ComponentBuilder,
+def renderFrag(
+  frag: Frag,
   element: Element = js.Dynamic.global.document.body.asInstanceOf[Element]
 ): Unit =
-  componentBuilder(using element, RootBinding())
+  frag.asInstanceOf[ComponentBuilder](using element, RootBinding())
