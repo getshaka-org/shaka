@@ -10,7 +10,7 @@ lazy val root = project
     scalaVersion := "3.0.1",
 
     libraryDependencies ++= Seq(
-      "org.getshaka" %%% "native-converter" % "0.5.0"
+      "org.getshaka" %%% "native-converter" % "0.5.1"
     ),
 
     // publishing settings
