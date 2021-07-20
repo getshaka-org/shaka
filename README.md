@@ -15,10 +15,12 @@ sbt new getshaka-org/shaka.g8
 Or, grab the coordinates directly:
 
 ```
-libraryDependencies ++= "org.getshaka" %%% "shaka" % "0.3.0"
+libraryDependencies ++= "org.getshaka" %%% "shaka" % "0.3.1"
 ```
+
+## Scaladoc
+
+[https://javadoc.io/doc/org.getshaka/shaka_sjs1_3/latest/api/org/getshaka/shaka.html](https://javadoc.io/doc/org.getshaka/shaka_sjs1_3/latest/api/org/getshaka/shaka.html)
 
 ## Notes
 * The website is down. Github pages doesn't support SPAs very well, so I'm in the process of setting up hosting.
-
-* Scaladoc link doesn't work because Scala 3 RC3's ScalaDoc is broken. The link will be updated when [this issue](https://github.com/lampepfl/dotty/issues/11943) gets fixed.
