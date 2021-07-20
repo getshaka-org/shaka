@@ -4,6 +4,8 @@
 *.iml
 .idea
 target
+project/metals.sbt
+project/project
 nbproject
 nb-configuration.xml
 
@@ -23,3 +25,8 @@ hs_err_pid*
 .bsp
 
 *.sc
+.bloop
+.bsp
+.metals
+.vscode
+workspace.code-workspace
