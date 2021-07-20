@@ -6,7 +6,7 @@ A modern Scala.js library for building user interfaces. Shaka has
 * A developer experience familiar to React.JS developers, with minimal abstraction.
 * Built-in state management and persistence.
 
-Checkout the [docs](https://getshaka.org), [ScalaDoc](/todo), generate a starter project:
+Checkout the [docs](https://getshaka.org), [ScalaDoc](https://javadoc.io/doc/org.getshaka/shaka_sjs1_3/latest/api/org/getshaka/shaka.html), and generate a starter project:
 
 ```
 sbt new getshaka-org/shaka.g8
@@ -17,10 +17,6 @@ Or, grab the coordinates directly:
 ```
 libraryDependencies ++= "org.getshaka" %%% "shaka" % "0.3.1"
 ```
-
-## Scaladoc
-
-[https://javadoc.io/doc/org.getshaka/shaka_sjs1_3/latest/api/org/getshaka/shaka.html](https://javadoc.io/doc/org.getshaka/shaka_sjs1_3/latest/api/org/getshaka/shaka.html)
 
 ## Notes
 * The website is down. Github pages doesn't support SPAs very well, so I'm in the process of setting up hosting.
