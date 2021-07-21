@@ -4,11 +4,11 @@ lazy val root = project
   .settings(
     organization := "org.getshaka",
     name := "shaka",
-    version := "0.3.1-SNAPSHOT",
+    version := "0.3.2-SNAPSHOT",
     versionScheme := Some("early-semver"),
     scalaVersion := "3.0.1",
     libraryDependencies ++= Seq(
-      "org.getshaka" %%% "native-converter" % "0.5.0",
+      "org.getshaka" %%% "native-converter" % "0.5.1",
       "org.scala-js" %%% "scalajs-dom" % "1.2.0-SNAPSHOT"
     ),
     // publishing settings
