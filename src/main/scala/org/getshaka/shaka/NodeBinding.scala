@@ -2,6 +2,7 @@ package org.getshaka.shaka
 
 import scala.collection.mutable.ArrayBuffer
 import scala.scalajs.js
+import org.scalajs.dom.{Element => _, *}
 
 /**
  * Binding subclass specialized for Nodes
@@ -68,7 +69,7 @@ class NodeBinding[V](
 
 object NodeBinding:
   private def newFragment(): Element =
-    js.Dynamic.global.document.createDocumentFragment().asInstanceOf[Element]
+    document.createDocumentFragment().as[Element]
 
   private def newComment(): Node =
-    js.Dynamic.global.document.createComment("").asInstanceOf[Node]
+    document.createComment("").as[Node]

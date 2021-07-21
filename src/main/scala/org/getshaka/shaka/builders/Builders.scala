@@ -1,9 +1,11 @@
-package org.getshaka.shaka.builders
+package org.getshaka.shaka
+package builders
 
 import scala.collection.Seq
 import scala.scalajs.js
+import org.scalajs.dom.{Element => _, *}
 
-import org.getshaka.shaka.{Element, Node, Binding, ComponentBuilder}
+import org.getshaka.shaka.{Binding, ComponentBuilder}
 import org.getshaka.nativeconverter.NativeConverter
 
 /*
@@ -16,7 +18,7 @@ Builders to construct html Nodes & Elements
 type ElementBuilder = Element ?=> Unit
 
 inline def tag(tagName: String)(init: ElementBuilder)(using parent: Element): Unit =
-  val e: Element = js.Dynamic.global.document.createElement(tagName).asInstanceOf[Element]
+  val e = document.createElement(tagName).as[Element]
   init(using e)
   parent.appendChild(e)
 
@@ -113,12 +115,12 @@ Common Css Properties (from https://developer.mozilla.org/en-US/docs/Web/CSS/CSS
 
 /**
  * Defines a Css property
- * @param propName Name of the property
+ * @param name prop name
  * @param style Css styling
  * @param pe Element to apply styling to.
  */
-inline def cssProp(propName: String)(style: String)(using pe: Element): Unit =
-  pe.asInstanceOf[js.Dynamic].style.updateDynamic(propName)(style)
+inline def cssProp(name: String)(style: String)(using pe: Element): Unit =
+  pe.setAttribute(name, style)
 
 inline def background(style: String)(using Element): Unit = cssProp("background")(style)
 inline def backgroundAttachment(style: String)(using Element): Unit = cssProp("backgroundAttachment")(style)
@@ -233,14 +235,14 @@ inline def maxWidth(style: String)(using Element): Unit = cssProp("maxWidth")(st
 
 /**
  * Define a Javascript property
- * @param propName name of the prop
+ * @param name prop name
  * @param value prop value
  * @param parent given Element to apply this property to
  * @param nc given NativeConverter for `value`
  * @tparam V value's type
  */
-inline def prop[V](propName: String)(value: V)(using parent: Element, nc: NativeConverter[V]): Unit =
-  parent.asInstanceOf[js.Dynamic].updateDynamic(propName)(nc.toNative(value))
+inline def prop[V](name: String)(value: V)(using parent: Element, nc: NativeConverter[V]): Unit =
+  parent.setAttribute(name, s"${nc.toNative(value)}")
   
 /*
 Global Attributes on HTMLElement, from https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes
@@ -403,8 +405,7 @@ extension (s: String)(using pe: Element)
   /**
    * Creates a TextNode
    */
-  inline def t: Unit =
-    pe.appendChild(js.Dynamic.global.document.createTextNode(s).asInstanceOf[Node])
+  inline def t: Unit = pe.appendChild(document.createTextNode(s))
 
 /**
  * Please don't use this.. unless you must

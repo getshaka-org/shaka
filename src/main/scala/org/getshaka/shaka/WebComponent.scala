@@ -2,6 +2,7 @@ package org.getshaka.shaka
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSGlobal
+import org.scalajs.dom.document
 import ShadowDom.*
 
 /**
@@ -41,26 +42,20 @@ trait WebComponent extends Component:
   def shadowDom: ShadowDom = ShadowDom.Disabled
 
   override def render(using parentElement: Element, parentBinding: Binding[?]): Unit =
-    val shakaWc: ShakaWc =
-      js.Dynamic.global.document.createElement(ShakaWc.TagName).asInstanceOf[ShakaWc]
-    shakaWc.component = this
-
-    val wcElement = shakaWc.asInstanceOf[Element]
+    val wc = document.createElement(ShakaWc.TagName).as[ShakaWc]
+    wc.component = this
 
     val elementToRender: Element = shadowDom match
-      case Disabled => wcElement
-      case Enabled =>
-        val shadowRoot = shakaWc.attachShadow(ShakaWc.OpenShadowOptions)
-        shadowRoot.asInstanceOf[Element]
+      case Disabled => wc
+      case Enabled => wc.attachShadow(ShakaWc.OpenShadowOptions).as[Element]
       case WithStyle(scopedStyle) =>
-        val shadowRoot = shakaWc.attachShadow(ShakaWc.OpenShadowOptions)
-        val styleTag = js.Dynamic.global.document.createElement("style")
-        styleTag.textContent = scopedStyle
-        shadowRoot.appendChild(styleTag)
-        shadowRoot.asInstanceOf[Element]
+        val shadow = wc.attachShadow(ShakaWc.OpenShadowOptions).as[Element]
+        val style = document.createElement("style")
+        style.textContent = scopedStyle
+        shadow.appendChild(style)
+        shadow
 
-    parentElement.appendChild(wcElement)
-    
+    parentElement.appendChild(wc)
     super.render(using elementToRender, parentBinding)
   
 private class ShakaWc extends HTMLElement:
@@ -80,10 +75,9 @@ private object ShakaWc:
 
 @js.native
 @JSGlobal
-private class HTMLElement extends js.Object:
+private class HTMLElement extends Element:
   def attachShadow(options: js.Any): HTMLElement = js.native
   def isConnected: Boolean = js.native
-  def appendChild(child: js.Any): Unit = js.native
 
   
   
