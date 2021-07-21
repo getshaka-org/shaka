@@ -3,7 +3,7 @@ package builders
 
 import scala.collection.Seq
 import scala.scalajs.js
-import org.scalajs.dom.{Element => _, *}
+import org.scalajs.dom.document
 
 import org.getshaka.shaka.{Binding, ComponentBuilder}
 import org.getshaka.nativeconverter.NativeConverter

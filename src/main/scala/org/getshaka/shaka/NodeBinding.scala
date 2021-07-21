@@ -2,7 +2,7 @@ package org.getshaka.shaka
 
 import scala.collection.mutable.ArrayBuffer
 import scala.scalajs.js
-import org.scalajs.dom.{Element => _, *}
+import org.scalajs.dom.{document, Node}
 
 /**
  * Binding subclass specialized for Nodes
