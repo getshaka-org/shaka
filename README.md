@@ -1,4 +1,4 @@
-## [Shaka](getshaka.org)
+## [Shaka](http://getshaka.org)
 
 A modern Scala.js library for building user interfaces. Shaka has
 
