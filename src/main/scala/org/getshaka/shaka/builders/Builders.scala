@@ -350,6 +350,7 @@ inline def onsearch[V: NativeConverter](value: V)(using Element): Unit = prop("o
 inline def onselect[V: NativeConverter](value: V)(using Element): Unit = prop("onselect")(value)
 inline def onsubmit[V: NativeConverter](value: V)(using Element): Unit = prop("onsubmit")(value)
 inline def onwheel[V: NativeConverter](value: V)(using Element): Unit = prop("onwheel")(value)
+inline def size[V: NativeConverter](value: V)(using Element): Unit = prop("size")(value)
 
 /**
  * Could be a ComponentBuilder, or could be anything else
