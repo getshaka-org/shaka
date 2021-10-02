@@ -1,5 +1,7 @@
 ## [Shaka](http://getshaka.org)
 
+Status: Experimental and expected to be significantly re-written.
+
 A modern Scala.js library for building user interfaces. Shaka has
 
 * Precise databinding, without VDOM, confusing macros, or AOT compilation.
