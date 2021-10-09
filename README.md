@@ -1,6 +1,6 @@
 ## [Shaka](https://getshaka.org)
 
-A modern Scala.js library for building user interfaces. Shaka has
+A modern Scala.js library for building user interfaces. Shaka has:
 
 * Precise databinding, without VDOM, confusing macros, or AOT compilation.
 * A developer experience familiar to React.JS developers, with minimal abstraction.

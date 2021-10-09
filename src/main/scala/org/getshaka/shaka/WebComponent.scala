@@ -3,6 +3,8 @@ package org.getshaka.shaka
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSGlobal
 import ShadowDom.*
+import org.scalajs.dom.{document, Element}
+import WebComponent.*
 
 /**
  * A {@link Component} wrapped in a Custom Element. Custom Elements
@@ -33,7 +35,7 @@ trait WebComponent extends Component:
   /**
    * Whether this WebComponent should use ShadowDom
    * and/or scoped styles. Defaults to Disabled.
-   * <br>
+   *
    * Shadow Dom means that means ids, class names, and selectors can be
    * used without fear of conflicts.
    * @see https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM
@@ -41,8 +43,7 @@ trait WebComponent extends Component:
   def shadowDom: ShadowDom = ShadowDom.Disabled
 
   override def render(using parentElement: Element, parentBinding: Binding[?]): Unit =
-    val shakaWc: ShakaWc =
-      js.Dynamic.global.document.createElement(ShakaWc.TagName).asInstanceOf[ShakaWc]
+    val shakaWc: ShakaWc = document.createElement(ShakaWc.TagName).asInstanceOf[ShakaWc]
     shakaWc.component = this
 
     val wcElement = shakaWc.asInstanceOf[Element]
@@ -62,28 +63,30 @@ trait WebComponent extends Component:
     parentElement.appendChild(wcElement)
     
     super.render(using elementToRender, parentBinding)
-  
-private class ShakaWc extends HTMLElement:
-  var component: WebComponent = null
 
-  def connectedCallback(): Unit =
-    if isConnected then component.connectedCallback()
+object WebComponent:
+  private class ShakaWc extends HTMLElement:
+    var component: WebComponent = null
 
-  def disconnectedCallback(): Unit =
-    component.disconnectedCallback()
+    def connectedCallback(): Unit =
+      if isConnected then component.connectedCallback()
 
-private object ShakaWc:
-  val TagName: String = "shaka-wc"
-  val OpenShadowOptions: js.Dynamic = js.Dynamic.literal(mode = "open")
-  js.Dynamic.global.customElements.define(TagName, js.constructorOf[ShakaWc])
+    def disconnectedCallback(): Unit =
+      component.disconnectedCallback()
+
+  private object ShakaWc:
+    val TagName: String = "shaka-wc"
+    val OpenShadowOptions: js.Dynamic = js.Dynamic.literal(mode = "open")
+    js.Dynamic.global.customElements.define(TagName, js.constructorOf[ShakaWc])
 
 
-@js.native
-@JSGlobal
-private class HTMLElement extends js.Object:
-  def attachShadow(options: js.Any): HTMLElement = js.native
-  def isConnected: Boolean = js.native
-  def appendChild(child: js.Any): Unit = js.native
+  // todo add attachShadow(..) to scalajs-dom
+  @js.native
+  @JSGlobal("HTMLElement")
+  private class HTMLElement extends js.Object:
+    def attachShadow(options: js.Any): HTMLElement = js.native
+    def isConnected: Boolean = js.native
+    def appendChild(child: js.Any): Unit = js.native
 
-  
-  
+
+
