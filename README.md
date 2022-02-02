@@ -1,7 +1,5 @@
 ## [Shaka](http://getshaka.org)
 
-Status: Experimental and expected to be significantly re-written.
-
 A modern Scala.js library for building user interfaces. Shaka has:
 
 * Precise databinding, without VDOM, confusing macros, or AOT compilation.
@@ -17,5 +15,5 @@ sbt new getshaka-org/shaka.g8
 Or, grab the coordinates directly:
 
 ```
-libraryDependencies ++= "org.getshaka" %%% "shaka" % "0.3.1"
+libraryDependencies ++= "org.getshaka" %%% "shaka" % "0.4.0"
 ```
