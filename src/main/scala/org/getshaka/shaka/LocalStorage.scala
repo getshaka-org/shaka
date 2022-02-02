@@ -2,6 +2,7 @@ package org.getshaka.shaka
 
 import scala.scalajs.js
 import org.getshaka.nativeconverter.NativeConverter
+import org.scalajs.dom.window
 
 import scala.collection.mutable.HashSet
 
@@ -19,11 +20,11 @@ class LocalStorage[V: NativeConverter](key: String) extends StorageManager[V]:
   LocalStorage.Keys.add(key)
 
   override def fetch: Option[V] =
-    val cachedString = js.Dynamic.global.localStorage.getItem(key).asInstanceOf[String]
-    Option(cachedString).map(NativeConverter[V].fromJson)
+    val cachedString = Option(window.localStorage.getItem(key))
+    cachedString.flatMap(s => NativeConverter[V].fromJsonE(s).toOption)
 
   override def store(value: V): Unit =
-    js.Dynamic.global.localStorage.setItem(key, value.toJson)
+    window.localStorage.setItem(key, value.toJson)
 
 object LocalStorage:
   private val Keys = js.Set.empty[String]

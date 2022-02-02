@@ -3,6 +3,7 @@ package org.getshaka.shaka
 import scala.collection.mutable.HashSet
 import scala.scalajs.js
 import org.getshaka.nativeconverter.NativeConverter
+import org.scalajs.dom.window
 
 /**
  * Persists to Session Storage
@@ -18,11 +19,11 @@ class SessionStorage[V: NativeConverter](key: String) extends StorageManager[V]:
   SessionStorage.Keys.add(key)
   
   override def fetch: Option[V] =
-    val cachedString = js.Dynamic.global.sessionStorage.getItem(key).asInstanceOf[String]
-    Option(cachedString).map(NativeConverter[V].fromJson)
+    val cachedString = Option(window.sessionStorage.getItem(key))
+    cachedString.flatMap(s => NativeConverter[V].fromJsonE(s).toOption)
 
   override def store(value: V): Unit =
-    js.Dynamic.global.sessionStorage.setItem(key, value.toJson)
+    window.sessionStorage.setItem(key, value.toJson)
 
 object SessionStorage:
   private val Keys = js.Set.empty[String]

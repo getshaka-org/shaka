@@ -4,13 +4,14 @@ lazy val root = project
   .settings(
     organization := "org.getshaka",
     name := "shaka",
-    version := "0.3.2-SNAPSHOT",
+    version := "0.4.0",
     versionScheme := Some("early-semver"),
 
-    scalaVersion := "3.0.1",
+    scalaVersion := "3.1.0",
 
     libraryDependencies ++= Seq(
-      "org.getshaka" %%% "native-converter" % "0.5.2"
+      "org.getshaka" %%% "native-converter" % "0.7.0",
+      "org.scala-js" %%% "scalajs-dom" % "2.1.0"
     ),
 
     // publishing settings
@@ -29,8 +30,9 @@ lazy val root = project
         url = url("https://augustnagro.com")
       )
     ),
-    publishMavenStyle := true,
+
     Test / publishArtifact := false,
+    publishMavenStyle := true,
     pomIncludeRepository := { _ => false },
     publishTo := {
       val nexus = "https://s01.oss.sonatype.org/"

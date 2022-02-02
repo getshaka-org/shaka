@@ -1,13 +1,6 @@
 package org.getshaka.shaka
 
-/**
- * Consumes a given parent Element and parent Binding
- * to construct DOM.
- */
-type ComponentBuilder = (Element, Binding[?]) ?=> Unit
-
-//trait ComponentBuilder:
-//  def apply(using pe: Element, pb: Binding[?]): Unit
+import org.scalajs.dom.Element
 
 /**
  * A Shaka Component provides a template for some part of an application,
@@ -16,11 +9,9 @@ type ComponentBuilder = (Element, Binding[?]) ?=> Unit
 trait Component:
 
   /**
-   * Returns the component's template. Since a template should always
-   * be a pure function of Component state, it is recommended to
-   * override this method as a val.
+   * Defines the component's template.
    */
-  def template: ComponentBuilder
+  def template: Frag
 
   /**
    * Renders this Component's template. render should only be overriden
@@ -29,4 +20,4 @@ trait Component:
    * you to use shadow-dom and lifecycle callbacks.
    */
   def render(using parentElement: Element, parentBinding: Binding[?]): Unit =
-    template(using parentElement, parentBinding)
+    Frag.render(template)

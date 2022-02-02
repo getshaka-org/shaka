@@ -1,5 +1,7 @@
 package org.getshaka.shaka
 
+import org.scalajs.dom.{HTMLElement, Element, Node, document, HTMLDivElement}
+
 import scala.collection.mutable.ArrayBuffer
 import scala.scalajs.js
 
@@ -15,11 +17,9 @@ class NodeBinding[V](
   parentElement: Element,
   builder: NodeBindingBuilder[V]
 ) extends Binding[V]:
-  import NodeBinding.*
 
+  private var container: HTMLElement = null
   private val children = js.Array[Binding[?]]()
-  private var firstRenderedNode: Node = null
-  private var renderedNodes: Int = 0
 
   override def addChildBinding(b: Binding[?]): Unit =
     children += b
@@ -29,46 +29,15 @@ class NodeBinding[V](
     for b <- children do b.destroy()
     children.clear()
 
-    val frag = newFragment()
-    builder(using frag, this)(newValue)
-    
-    if firstRenderedNode == null then
-      val len = frag.childNodes.length
-      if len > 0 then
-        firstRenderedNode = frag.childNodes.item(0)
-        parentElement.appendChild(frag)
-        renderedNodes = len
-      else
-        val marker = newComment()
-        firstRenderedNode = marker
-        parentElement.appendChild(marker)
-        renderedNodes = 1
+    if container == null then
+      container = document.createElement("div").asInstanceOf[HTMLDivElement]
+      container.style.display = "contents"
+      builder(using container, this)(newValue)
+      parentElement.appendChild(container)
     else
-      // replace the firstRenderedElement with a marker element, and remove all siblings
-      for i <- 1 until renderedNodes do
-        parentElement.removeChild(firstRenderedNode.nextSibling)
-      val marker = newComment()
-      parentElement.replaceChild(marker, firstRenderedNode)
-        
-      val len = frag.childNodes.length
-      if len > 0 then
-        firstRenderedNode = frag.childNodes.item(0)
-        parentElement.insertBefore(frag, marker)
-        parentElement.removeChild(marker)  
-        renderedNodes = len
-      else
-        firstRenderedNode = marker
-        renderedNodes = 1
-
-  end onChange
+      container.innerHTML = ""
+      builder(using container, this)(newValue)
 
   override def destroy(): Unit =
     state.removeBinding(this)
     for b <- children do b.destroy()
-
-object NodeBinding:
-  private def newFragment(): Element =
-    js.Dynamic.global.document.createDocumentFragment().asInstanceOf[Element]
-
-  private def newComment(): Node =
-    js.Dynamic.global.document.createComment("").asInstanceOf[Node]
