@@ -10,4 +10,4 @@ def render(frag: Frag, element: Element): Unit =
   Frag.render(frag)(using element, RootBinding())
 
 extension (f: Frag)
-  inline def render(using Element, Binding[?]): Unit = Frag.render(f)
+  def render(using Element, Binding[?]): Unit = Frag.render(f)
