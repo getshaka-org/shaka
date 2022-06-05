@@ -112,12 +112,14 @@ inline def template(init: HTMLElement ?=> Unit)(using Element): Unit = tag("temp
 Common Css Properties (from https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Properties_Reference)
  */
 
-/**
- * Defines a Css property
- * @param propName Name of the property
- * @param style Css styling
- * @param pe Element to apply styling to.
- */
+/** Defines a Css property
+  * @param propName
+  *   Name of the property
+  * @param style
+  *   Css styling
+  * @param pe
+  *   Element to apply styling to.
+  */
 inline def cssProp(propName: String)(style: String)(using pe: HTMLElement): Unit =
   pe.asInstanceOf[js.Dynamic].style.updateDynamic(propName)(style)
 
@@ -232,17 +234,21 @@ inline def maxHeight(style: String)(using HTMLElement): Unit = cssProp("maxHeigh
 inline def minWidth(style: String)(using HTMLElement): Unit = cssProp("minWidth")(style)
 inline def maxWidth(style: String)(using HTMLElement): Unit = cssProp("maxWidth")(style)
 
-/**
- * Define a Javascript property
- * @param propName name of the prop
- * @param value prop value
- * @param parent given Element to apply this property to
- * @param nc given NativeConverter for `value`
- * @tparam V value's type
- */
+/** Define a Javascript property
+  * @param propName
+  *   name of the prop
+  * @param value
+  *   prop value
+  * @param parent
+  *   given Element to apply this property to
+  * @param nc
+  *   given NativeConverter for `value`
+  * @tparam V
+  *   value's type
+  */
 inline def prop[V](propName: String)(value: V)(using parent: Element, nc: NativeConverter[V]): Unit =
   parent.asInstanceOf[js.Dynamic].updateDynamic(propName)(nc.toNative(value))
-  
+
 /*
 Global Attributes on HTMLElement, from https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes
  */
@@ -280,7 +286,8 @@ inline def controls(value: Boolean)(using HTMLElement): Unit = prop("controls")(
 inline def datetime(value: String)(using HTMLElement): Unit = prop("datetime")(value)
 inline def disabled(value: Boolean)(using HTMLElement): Unit = prop("disabled")(value)
 inline def download(value: Boolean)(using HTMLElement): Unit = prop("download")(value)
-inline def `for`(value: String)(using HTMLElement): Unit = prop("for")(value)
+inline def `for`(value: String)(using HTMLElement): Unit = prop("htmlFor")(value)
+inline def htmlFor(value: String)(using HTMLElement): Unit = prop("htmlFor")(value)
 inline def formaction(value: String)(using HTMLElement): Unit = prop("formaction")(value)
 inline def href(value: String)(using HTMLElement): Unit = prop("href")(value)
 inline def loop(value: Boolean)(using HTMLElement): Unit = prop("loop")(value)
@@ -307,7 +314,6 @@ inline def target(value: String)(using HTMLElement): Unit = prop("target")(value
 inline def `type`(value: String)(using HTMLElement): Unit = prop("type")(value)
 inline def value(value: String)(using HTMLElement): Unit = prop("value")(value)
 inline def wrap(value: String)(using HTMLElement): Unit = prop("wrap")(value)
-
 
 inline def onabort(value: Event => Unit)(using HTMLElement): Unit = prop("onabort")(value)
 inline def onblur(value: FocusEvent => Unit)(using HTMLElement): Unit = prop("onblur")(value)
@@ -355,60 +361,55 @@ inline def onwheel(value: WheelEvent => Unit)(using HTMLElement): Unit = prop("o
 import scala.quoted.*
 
 extension (inline sc: StringContext)(using inline pe: Element, inline pb: Binding[?])
-  /**
-   * t = TextNode Interpolator
-   * <br>
-   * An easy way to interpolate text and elements
-   */
+  /** t = TextNode Interpolator <br> An easy way to interpolate text and elements
+    */
   inline def t(inline args: Any*): Unit =
     ${ tImpl('pe, 'pb, 'sc, 'args) }
 
 private def tImpl(
-  pe: Expr[Element],
-  pb: Expr[Binding[?]],
-  sc: Expr[StringContext],
-  args: Expr[Seq[Any]]
+    pe: Expr[Element],
+    pb: Expr[Binding[?]],
+    sc: Expr[StringContext],
+    args: Expr[Seq[Any]]
 )(using Quotes): Expr[Unit] =
   val argsExprs = args match
-  case Varargs(ae) => ae.asInstanceOf[Seq[Expr[Any]]]
-  
+    case Varargs(ae) => ae.asInstanceOf[Seq[Expr[Any]]]
+
   sc match
-  case '{ StringContext(${Varargs(strings)}: _*) } =>
-    strings.map(s => Expr(s.valueOrError.stripMargin)) match
-    case sHead +: sTail =>
-      '{
-        $pe.appendChild(document.createTextNode($sHead))
-        ${tArgImpl(pe, pb, sTail, argsExprs)}
-       }
+    case '{ StringContext(${ Varargs(strings) }: _*) } =>
+      strings.map(s => Expr(s.valueOrError.stripMargin)) match
+        case sHead +: sTail =>
+          '{
+            $pe.appendChild(document.createTextNode($sHead))
+            ${ tArgImpl(pe, pb, sTail, argsExprs) }
+          }
 
 private def tArgImpl(
-  pe: Expr[Element],
-  pb: Expr[Binding[?]],
-  strings: Seq[Expr[String]],
-  args: Seq[Expr[Any]]
+    pe: Expr[Element],
+    pb: Expr[Binding[?]],
+    strings: Seq[Expr[String]],
+    args: Seq[Expr[Any]]
 )(using q: Quotes): Expr[Unit] =
   (strings, args) match
-  case (Seq(), Seq()) => '{ () }
-  case (s +: sTail, a +: aTail) =>
-    val applyArgToDom = a match
-      case '{ $f: Frag } => '{ $f.render(using $pe, $pb) }
-      case '{ $c: Component } => '{ $c.render(using $pe, $pb) }
-      case '{ $u: Unit } => u
-      case '{ $x: t } => '{ $pe.appendChild(document.createTextNode($x.toString)) }
-    '{
-      $applyArgToDom
-      $pe.appendChild(document.createTextNode($s))
-      ${tArgImpl(pe, pb, sTail, aTail)}
-    }
+    case (Seq(), Seq()) => '{ () }
+    case (s +: sTail, a +: aTail) =>
+      val applyArgToDom = a match
+        case '{ $f: Frag }      => '{ $f.render(using $pe, $pb) }
+        case '{ $c: Component } => '{ $c.render(using $pe, $pb) }
+        case '{ $u: Unit }      => u
+        case '{ $x: t }         => '{ $pe.appendChild(document.createTextNode($x.toString)) }
+      '{
+        $applyArgToDom
+        $pe.appendChild(document.createTextNode($s))
+        ${ tArgImpl(pe, pb, sTail, aTail) }
+      }
 
 extension (s: String)(using pe: Element)
   /** Creates a TextNode */
   inline def t: Unit =
     pe.appendChild(document.createTextNode(s))
 
-/**
- * Please don't use this.. unless you must
- */
+/** Please don't use this.. unless you must
+  */
 inline def dangerouslySetInnerHtml(html: String)(using parent: Element): Unit =
   parent.innerHTML = html
-
