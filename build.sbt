@@ -6,10 +6,10 @@ lazy val root = project
     name := "shaka",
     version := "0.5.1-SNAPSHOT",
     versionScheme := Some("early-semver"),
-    scalaVersion := "3.1.2",
+    scalaVersion := "3.2.2",
     libraryDependencies ++= Seq(
       "org.getshaka" %%% "native-converter" % "0.8.0",
-      "org.scala-js" %%% "scalajs-dom" % "2.2.0"
+      "org.scala-js" %%% "scalajs-dom" % "2.4.0"
     ),
 
     // publishing settings
