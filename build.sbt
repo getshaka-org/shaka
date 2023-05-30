@@ -4,7 +4,7 @@ lazy val root = project
   .settings(
     organization := "org.getshaka",
     name := "shaka",
-    version := "0.6.0",
+    version := "0.6.1-SNAPSHOT",
     versionScheme := Some("early-semver"),
     scalaVersion := "3.3.0",
     libraryDependencies ++= Seq(
